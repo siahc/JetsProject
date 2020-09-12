@@ -64,4 +64,7 @@ public abstract class Jet {
 		this.price = price;
 	}
 
+	public String toString() {
+		return String.format("%s: %.2fkm/h %dkm $%d", model, speed, range, price);
+	}
 }

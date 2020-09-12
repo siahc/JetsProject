@@ -20,7 +20,9 @@ public class AirField {
 		hanger.remove(index);
 	}
 	public void listAllJets() {
-		
+		// TODO: instead of calling the arraylist tostring,
+		// loop through each index and print on separate lines
+		System.out.println(hanger);
 	}
 	
 }
