@@ -5,6 +5,7 @@ package com.skilldistillery.jet;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class JetsApplication {
@@ -29,12 +30,12 @@ public class JetsApplication {
 			String line;
 			while ((line = bufIn.readLine()) != null) {
 				String[] planeInfo = line.trim().split(",");
-				
+
 				String type = "";
 				String model = "";
-				Double speed = 0.0;
-				Integer range = 0;
-				Long price = (long) 0;
+				double speed = 0.0;
+				int range = 0;
+				long price = (long) 0;
 				if (planeInfo.length >= 5) {
 					type = planeInfo[0].trim();
 					model = planeInfo[1].trim();
@@ -45,21 +46,25 @@ public class JetsApplication {
 					System.out.println("Warning: skipped '" + line + "' -- not enough fields");
 					continue;
 				}
-
-				if (type.contentEquals("Fighter")) {
-					FighterJet newJet = new FighterJet(model, speed, range, price);
-					airfield.AddJet(newJet);
-				} else if (type.contentEquals("Cargo")) {
-					CargoPlane newJet = new CargoPlane(model, speed, range, price);
-					airfield.AddJet(newJet);
-				} else if (type.contentEquals("Jet")) {
-					JetImpl newJet = new JetImpl(model, speed, range, price);
-					airfield.AddJet(newJet);
-				} else { // error
-				}
+				addTypedJet(type, model, speed, range, price);
 			}
 		} catch (IOException e) {
 			System.err.println(e);
+		}
+	}
+
+	private void addTypedJet(String type, String model, double speed, int range, long price) {
+		if (type.contentEquals("Fighter") || type.contentEquals("fighter")) {
+			FighterJet newJet = new FighterJet(model, speed, range, price);
+			airfield.AddJet(newJet);
+		} else if (type.contentEquals("Cargo") || type.contentEquals("cargo")) {
+			CargoPlane newJet = new CargoPlane(model, speed, range, price);
+			airfield.AddJet(newJet);
+		} else if (type.contentEquals("Jet") || type.contentEquals("jet")) {
+			JetImpl newJet = new JetImpl(model, speed, range, price);
+			airfield.AddJet(newJet);
+		} else { // error
+			System.out.println(type + " is not recognized.");
 		}
 	}
 
@@ -82,6 +87,7 @@ public class JetsApplication {
 			System.out.println();
 			System.out.print("Your selection: ");
 			int input = scanIn.nextInt();
+			scanIn.nextLine();
 
 			switch (input) {
 			case 1: {
@@ -93,15 +99,15 @@ public class JetsApplication {
 				break;
 			}
 			case 3: {
-				viewJetWithLongestRange();
+				viewFastestJet();
 				break;
 			}
 			case 4: {
-				loadAllCargoJets();
+				viewJetWithLongestRange();
 				break;
 			}
 			case 5: {
-				viewFastestJet();
+				loadAllCargoJets();
 				break;
 			}
 			case 6: {
@@ -134,24 +140,102 @@ public class JetsApplication {
 	}
 
 	private void flyAllJets() {
-	}
-
-	private void viewJetWithLongestRange() {
-	}
-
-	private void loadAllCargoJets() {
+		ArrayList<Jet> hangar = airfield.getHangar();
+		for (int i = 0; i < hangar.size(); i++) {
+			Jet eachJet = hangar.get(i);
+			eachJet.fly();
+		}
 	}
 
 	private void viewFastestJet() {
+		Jet fastestJet = null;
+		ArrayList<Jet> hangar = airfield.getHangar();
+		for (int i = 0; i < hangar.size(); i++) {
+			Jet eachJet = hangar.get(i);
+			if (fastestJet == null || eachJet.getSpeed() > fastestJet.getSpeed()) {
+				fastestJet = eachJet;
+			}
+		}
+		if (fastestJet != null)
+			System.out.println(fastestJet);
+		else
+			System.out.println(" No jets in the hangar.");
+	}
+
+	private void viewJetWithLongestRange() {
+		Jet longestJet = null;
+		ArrayList<Jet> hangar = airfield.getHangar();
+		for (int i = 0; i < hangar.size(); i++) {
+			Jet eachJet = hangar.get(i);
+			if (longestJet == null || eachJet.getRange() > longestJet.getRange()) {
+				longestJet = eachJet;
+			}
+		}
+		if (longestJet != null)
+			System.out.println(longestJet);
+		else
+			System.out.println(" No jets in the hangar.");
+	}
+
+	private void loadAllCargoJets() {
+		ArrayList<Jet> hangar = airfield.getHangar();
+		for (int i = 0; i < hangar.size(); i++) {
+			Jet eachJet = hangar.get(i);
+			if (eachJet instanceof CargoCarrier) {
+				CargoCarrier cc = (CargoCarrier) eachJet;
+				cc.loadCargo();
+			}
+		}
 	}
 
 	private void dogfight() {
+		ArrayList<Jet> hangar = airfield.getHangar();
+		for (int i = 0; i < hangar.size(); i++) {
+			Jet eachJet = hangar.get(i);
+			// Casts jet into combat ready into an interface instance
+			if (eachJet instanceof CombatReady) {
+				CombatReady cr = (CombatReady) eachJet;
+				cr.fight();
+			}
+		}
 	}
 
 	private void addJetToFleet() {
+		System.out.println();
+		System.out.print("Please input type of jet (Fighter/Cargo/Jet): ");
+		String type = scanIn.nextLine();
+
+		System.out.print("Please input model of jet: ");
+		String model = scanIn.nextLine();
+
+		System.out.print("Please input speed (mph) of jet: ");
+		double speed = scanIn.nextDouble();
+		scanIn.nextLine();
+		
+		System.out.print("Please input range (mi) of jet: ");
+		int range = scanIn.nextInt();
+		scanIn.nextLine();
+
+		System.out.print("Please input price (USD) of jet: ");
+		long price = scanIn.nextLong();
+		scanIn.nextLine();
+
+		addTypedJet(type, model, speed, range, price);
+
 	}
 
 	private void removeJetFromFleet() {
+		ArrayList<Jet> hangar = airfield.getHangar();
+		if (hangar.size() <= 0) {
+			System.out.println("There is nothing to remove. ");
+			return;
+		}
+		listFleet();
+		System.out.print("Please select jet number you would like to remove: ");
+		int index = scanIn.nextInt();
+		Jet j = hangar.get(index);
+		airfield.removeJet(index);
+		System.out.println("You have removed " + j);
 	}
 
 	private void launch() {

@@ -15,14 +15,21 @@ public abstract class Jet {
 
 	}
 	public void fly() {
+		// ???
+		System.out.println(this);
+		System.out.println("This jet will run out of fuel once it has traveled " + speed/range + " hours.");
 		// prints out the jet details and the amount of time 
 		// the jet can fly until it runs out of fuel (based on
 		// speed and range).
 		
 	}
 
+	double getSpeedInMPH() {
+		return speed;  // Speed is input in mph
+	}
+	
 	double getSpeedInMach() {
-		return speed;  // Speed is input in mach
+		return speed / 767;  
 	}
 
 	public String getModel() {
@@ -65,6 +72,6 @@ public abstract class Jet {
 	}
 
 	public String toString() {
-		return String.format("%s: %.2fkm/h %dkm $%d", model, speed, range, price);
+		return String.format("%s: %.2fmph (mach %.2f) %dmi $%d", model, speed, getSpeedInMach(), range, price);
 	}
 }

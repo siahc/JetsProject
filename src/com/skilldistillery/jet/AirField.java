@@ -4,25 +4,34 @@ import java.util.ArrayList;
 
 public class AirField {
 
-	private ArrayList<Jet> hanger = new ArrayList<> ();
+	private ArrayList<Jet> hangar = new ArrayList<> ();
 			
 	public AirField() {
 		
 	}
 
+	public ArrayList<Jet> getHangar() {
+		return hangar;
+	}
+
+
 	public void AddJet(Jet newJet) {
 		// TODO Auto-generated method stub
-		hanger.add(newJet);
+		hangar.add(newJet);
 		
 	}
 
 	public void  removeJet(int index) {
-		hanger.remove(index);
+		hangar.remove(index);
 	}
 	public void listAllJets() {
-		// TODO: instead of calling the arraylist tostring,
 		// loop through each index and print on separate lines
-		System.out.println(hanger);
+		for (int c = 0; c < hangar.size(); c++) {
+			Jet j = hangar.get(c);
+			System.out.print(c + ". ");
+			System.out.println(j);
+		}
 	}
+	 
 	
 }

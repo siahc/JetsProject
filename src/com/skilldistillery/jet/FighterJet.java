@@ -8,6 +8,7 @@ public class FighterJet extends Jet implements CombatReady{
 		//method stub to fill out
 	@Override
 	public void fight() {
+		System.out.println(getModel() + " is now armed and ready to fight. ");
 		// TODO Auto-generated method stub
 		
 	}
