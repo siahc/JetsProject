@@ -125,6 +125,7 @@ public class JetsApplication {
 			case 9: {
 				// if user selects quit, program will exit the loop
 				quit = true;
+				System.out.println("Goodbye 🛫 ");
 				break;
 			}
 			default: {
